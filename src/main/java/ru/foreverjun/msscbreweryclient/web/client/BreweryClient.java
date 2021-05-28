@@ -5,6 +5,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.foreverjun.msscbreweryclient.web.model.BeerDto;
+import ru.foreverjun.msscbreweryclient.web.model.CustomerDto;
 
 import java.net.URI;
 import java.util.UUID;
@@ -13,8 +14,9 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "ru.foreverjun.brewery", ignoreUnknownFields = false)
 public class BreweryClient {
 
-    public final String BEER_PATH_V1 = "/api/v1/beer/";
     private String apihost;
+    public final String BEER_PATH_V1 = "/api/v1/beer/";
+    public final String CUSTOMER_PATH_V1 = "/api/v1/customer/";
 
     private final RestTemplate restTemplate;
 
@@ -36,6 +38,22 @@ public class BreweryClient {
 
     public void deleteBeer(UUID id) {
         restTemplate.delete(apihost + BEER_PATH_V1 + id);
+    }
+
+    public CustomerDto getCustomerById(UUID id) {
+        return restTemplate.getForObject(apihost + CUSTOMER_PATH_V1 + id, CustomerDto.class);
+    }
+
+    public URI saveNewCustomer(CustomerDto customerDto) {
+        return restTemplate.postForLocation(apihost + CUSTOMER_PATH_V1, customerDto);
+    }
+
+    public void updateCustomer(UUID id, CustomerDto customerDto) {
+        restTemplate.put(apihost + CUSTOMER_PATH_V1 + id, customerDto);
+    }
+
+    public void deleteCustomer(UUID id) {
+        restTemplate.delete(apihost + CUSTOMER_PATH_V1 + id);
     }
 
     public void setApihost(String apihost) {
